@@ -1,2 +1,0 @@
-# vedio-admin
-vedio-admin
