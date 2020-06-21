@@ -1,12 +1,20 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login, getCode, getInfo } from '@/api/user'
+import { 
+  getToken,
+  setToken,
+  removeToken,
+  getUID,
+  setUID,
+  removeUID } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { MD5 } from '@/utils/md5'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    uid: getUID()
   }
 }
 
@@ -19,6 +27,9 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  SET_UID: (state, uid) => {
+    state.uid = uid
+  },
   SET_NAME: (state, name) => {
     state.name = name
   },
@@ -28,14 +39,29 @@ const mutations = {
 }
 
 const actions = {
+
+  // get yanzhenma
+  getCode({ commit }) {
+    return new Promise((resolve, reject) => {
+      getCode().then(response=>{
+        const { data } = response
+        resolve(data)
+      }).catch(err=>{
+        reject(err)
+      }) // must remove  token  first
+    })
+  },
+
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { username, password, idycode, vercode, type } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ userid: username.trim(), signature: MD5(MD5(password)+idycode), idycode, vercode, type}).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
+        commit('SET_UID', data.uid)
         setToken(data.token)
+        setUID(data.uid)
         resolve()
       }).catch(error => {
         reject(error)
@@ -53,10 +79,10 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
 
-        const { name, avatar } = data
+        const { username, icon } = data
 
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_NAME', username)
+        commit('SET_AVATAR', icon)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -65,16 +91,17 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+  logout({ commit }) {
+    return new Promise((resolve) => {
+      // logout(state.token).then(() => {
         removeToken() // must remove  token  first
+        removeUID() // must remove  uid  second
         resetRouter()
         commit('RESET_STATE')
         resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      // }).catch(error => {
+      //   reject(error)
+      // })
     })
   },
 

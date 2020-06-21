@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">登录</h3>
       </div>
 
       <el-form-item prop="username">
@@ -41,7 +41,30 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-form-item prop="vercode">
+        <span class="svg-container">
+          <svg-icon icon-class="user" />
+        </span>
+        <el-input
+          ref="vercode"
+          v-model="loginForm.vercode"
+          placeholder="验证码"
+          name="vercode"
+          type="text"
+          tabindex="3"
+          style="width:60%"
+          auto-complete="on"
+        >
+        </el-input>
+        <el-image
+          style="width: 100px;height:30px;top:10px;position:relative"
+          :src="url"
+          fit="contain"
+          @click="getcode"
+        ></el-image>
+      </el-form-item>
+
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
@@ -59,7 +82,7 @@ export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+      if (value.length === 0) {
         callback(new Error('Please enter the correct user name'))
       } else {
         callback()
@@ -73,9 +96,13 @@ export default {
       }
     }
     return {
+      url:'',
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: 'sbasb55',
+        password: 'Sbasb555',
+        vercode:'',
+        idycode:'',
+        type:2
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -86,6 +113,9 @@ export default {
       redirect: undefined
     }
   },
+  mounted(){
+    this.getcode()
+  },
   watch: {
     $route: {
       handler: function(route) {
@@ -95,6 +125,14 @@ export default {
     }
   },
   methods: {
+    getcode(){
+      this.$store.dispatch('user/getCode').then((data) => {
+        this.url = 'data:image/png;base64,'+ data.image
+        this.loginForm.idycode = data.code
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''

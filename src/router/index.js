@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '后台管理', icon: 'dashboard' }
     }]
   },
 
@@ -60,7 +60,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    meta: { title: '用户管理', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'table',
@@ -78,14 +78,17 @@ export const constantRoutes = [
   },
 
   {
-    path: '/form',
+    path: '/class',
     component: Layout,
+    redirect: '/class/index',
+    name: 'Class',
+    meta: { title: '课程管理', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        name: 'Classes',
+        component: () => import('@/views/classes/index'),
+        meta: { title: '课程管理', icon: 'form' }
       }
     ]
   },
