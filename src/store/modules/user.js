@@ -1,5 +1,6 @@
-import { login, getCode, getInfo } from '@/api/user'
-import { 
+import { login, getCode, getInfo, setgetuserInfo } from '@/api/user'
+import { getList } from '@/api/table'
+import {
   getToken,
   setToken,
   removeToken,
@@ -39,14 +40,32 @@ const mutations = {
 }
 
 const actions = {
-
+  setgetuserInfo({ commit },getdata) {
+    return new Promise((resolve, reject) => {
+      setgetuserInfo(getdata).then(response => {
+        const { data } = response
+        resolve(data)
+      }).catch(err =>{
+        reject(err)
+      })
+    })
+  },
+  getList({ commit },data) {
+    return new Promise((resolve, reject) => {
+      getList(data).then(response => {
+        resolve(response)
+      }).catch(err =>{
+        reject(err)
+      })
+    })
+  },
   // get yanzhenma
   getCode({ commit }) {
     return new Promise((resolve, reject) => {
-      getCode().then(response=>{
+      getCode().then(response => {
         const { data } = response
         resolve(data)
-      }).catch(err=>{
+      }).catch(err => {
         reject(err)
       }) // must remove  token  first
     })

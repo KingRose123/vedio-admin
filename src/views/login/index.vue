@@ -76,10 +76,11 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-
 export default {
   name: 'Login',
+  mounted() {
+    this.getcode()
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (value.length === 0) {
@@ -96,13 +97,13 @@ export default {
       }
     }
     return {
-      url:'',
+      url: '',
       loginForm: {
         username: 'sbasb55',
         password: 'Sbasb555',
-        vercode:'',
-        idycode:'',
-        type:2
+        vercode: '',
+        idycode: '',
+        type: 2
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -113,9 +114,6 @@ export default {
       redirect: undefined
     }
   },
-  mounted(){
-    this.getcode()
-  },
   watch: {
     $route: {
       handler: function(route) {
@@ -125,9 +123,9 @@ export default {
     }
   },
   methods: {
-    getcode(){
+    getcode() {
       this.$store.dispatch('user/getCode').then((data) => {
-        this.url = 'data:image/png;base64,'+ data.image
+        this.url = 'data:image/png;base64,' + data.image
         this.loginForm.idycode = data.code
       }).catch((err) => {
         console.log(err)

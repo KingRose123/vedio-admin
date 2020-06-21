@@ -12,9 +12,17 @@ export function getCode() {
   return request({
     url: 'admin/getcode',
     method: 'post',
-    data:{
-      version:1
+    data: {
+      version: 1
     }
+  })
+}
+// 获取/设置用户信息
+export function setgetuserInfo(data) {
+  return request({
+    url: 'admin/userinfo',
+    method: 'post',
+    data
   })
 }
 
@@ -22,7 +30,7 @@ export function getInfo() {
   return request({
     url: 'user/info',
     method: 'post',
-    data:{
+    data: {
       flag: 0
     }
   })

@@ -17,7 +17,7 @@ const mutations = {
   },
   SET_TOKEN: (state, token) => {
     state.token = token
-  },
+  }
 }
 
 const actions = {
@@ -25,14 +25,14 @@ const actions = {
   // get yanzhenma
   getless({ commit }) {
     return new Promise((resolve, reject) => {
-      getless().then(response=>{
+      getless().then(response => {
         const { data } = response
         resolve(data)
-      }).catch(err=>{
+      }).catch(err => {
         reject(err)
       }) // must remove  token  first
     })
-  },
+  }
 }
 
 export default {
