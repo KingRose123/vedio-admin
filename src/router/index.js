@@ -78,9 +78,9 @@ export const constantRoutes = [
   },
 
   {
-    path: '/class',
+    path: '/classes',
     component: Layout,
-    redirect: '/class/index',
+    redirect: '/classes/index',
     name: 'Class',
     meta: { title: '课程管理', icon: 'el-icon-s-help' },
     children: [
@@ -88,7 +88,25 @@ export const constantRoutes = [
         path: 'index',
         name: 'Classes',
         component: () => import('@/views/classes/index'),
-        meta: { title: '课程管理', icon: 'form' }
+        meta: { title: '课程列表', icon: 'form' }
+      },
+      {
+        path: 'createclass',
+        name: 'Classadd',
+        component: () => import('@/views/classes/createclass'),
+        meta: { title: '创建课程', icon: 'form' }
+      },
+      {
+        path: 'typelist',
+        name: 'Typelist',
+        component: () => import('@/views/classes/typelist'),
+        meta: { title: '分类管理', icon: 'tree' }
+      },
+      {
+        path: 'addles',
+        name: 'Addles',
+        component: () => import('@/views/classes/addles'),
+        meta: { title: '添加内容', icon: 'tree' }
       }
     ]
   },
@@ -167,7 +185,7 @@ export const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

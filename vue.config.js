@@ -36,6 +36,17 @@ module.exports = {
       warnings: false,
       errors: true
     },
+    proxy: {
+      "/admin": {
+        target: "https://api.aeui.cn",
+        secure: true,
+        pathRewrite: {
+          "^/admin": ""
+        },
+        changeOrigin: true,
+      }
+    },
+    historyApiFallback: true,
     before: require('./mock/mock-server.js')
   },
   configureWebpack: {

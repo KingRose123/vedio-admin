@@ -42,3 +42,19 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function adduser(data) {
+  return request({
+    url: 'admin/adduser',
+    method: 'post',
+    data
+  })
+}
+// 根据类型查找用户列表
+export function usersearch(data) {
+  return request({
+    url: 'admin/usersearch',
+    method: 'post',
+    data
+  })
+}

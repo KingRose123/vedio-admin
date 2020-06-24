@@ -1,4 +1,4 @@
-import { login, getCode, getInfo, setgetuserInfo } from '@/api/user'
+import { login, getCode, getInfo, setgetuserInfo, adduser, usersearch } from '@/api/user'
 import { getList } from '@/api/table'
 import {
   getToken,
@@ -40,6 +40,24 @@ const mutations = {
 }
 
 const actions = {
+  usersearch({ commit },data) {
+    return new Promise((resolve, reject) => {
+      usersearch(data).then(response => {
+        resolve(response)
+      }).catch(err =>{
+        reject(err)
+      })
+    })
+  },
+  adduser({ commit },data) {
+    return new Promise((resolve, reject) => {
+      adduser(data).then(response => {
+        resolve(response)
+      }).catch(err =>{
+        reject(err)
+      })
+    })
+  },
   setgetuserInfo({ commit },getdata) {
     return new Promise((resolve, reject) => {
       setgetuserInfo(getdata).then(response => {

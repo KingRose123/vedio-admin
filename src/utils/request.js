@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken, getUID } from '@/utils/auth'
@@ -7,7 +8,7 @@ import { getToken, getUID } from '@/utils/auth'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 15000  // request timeout
 })
 
 // request interceptor
@@ -49,7 +50,7 @@ service.interceptors.response.use(
     // if the custom code is not 20000, it is judged as an error.
     if (res.errcode !== 0) {
       Message({
-        message: res.message || 'Error',
+        message: res.errmsg || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
@@ -78,7 +79,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(res.errmsg || 'Error'))
     } else {
       return res
     }

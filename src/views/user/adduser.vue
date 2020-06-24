@@ -36,12 +36,9 @@
           <el-radio label="女" />
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
-      </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
+        <el-button type="primary" @click="onSubmit">{{this.text}}</el-button>
+        <el-button @click="onCancel">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -61,7 +58,14 @@ export default {
         email: '',
         code: '',
         gender: ''
-      }
+      },
+      pandun:{
+        username: '',
+        email: '',
+        phone: ''
+      },
+      text: '创建',
+      isgai: false,
     }
   },
   mounted() {
@@ -71,24 +75,67 @@ export default {
         uid: this.$route.query.uid
       }
       this.$store.dispatch('user/setgetuserInfo',fetdata).then(res => {
+        this.pandun.username = res.username
+        this.pandun.email = res.email
         res.type = +res.type === 9 ? '管理员' : +res.type === 7 ? '教师' : '普通用户'
-        res.code = +res.code === 9 ? '管理员' : +res.type === 0 ? '正常' : '禁用'
+        res.code = +res.code === 9 ? '管理员' : +res.code === 0 ? '正常' : '禁用'
         let arr = res.phone.split('-')
-        res.phone = arr[1]
+        if(arr[1] !== undefined){
+          res.phone = arr[1]
+          this.pandun.phone = res.phone
+        }
         res.gender = +res.gender === 0 ? '男' : '女'
         this.form = {
           ...res,
           password: ''
         }
+        this.text = '修改'
+        this.isgai = true
       }).catch(err => {
         console.log(err)
       })
-      this.$route.meta.title = "修改用户信息"
     }
   },
   methods: {
     onSubmit() {
-      this.$message('submit!')
+      
+      if(this.isgai){
+        this.form.flag = 1
+        var tijiao = {
+          ...this.form
+        }
+        if(this.form.password === ''){
+          delete tijiao.password
+        }
+        if( this.form.username === this.pandun.username ){
+          delete tijiao.username
+        }
+        if( this.form.phone == this.pandun.phone ){
+          delete tijiao.phone
+        }
+        if( this.pandun.email === this.form.email ){
+          delete tijiao.email
+        }
+        this.$store.dispatch('user/setgetuserInfo',tijiao).then(res=>{
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          this.$router.push({path: '/user/table'})
+        }).catch(err => {
+          console.log(err)
+        })
+      }else{
+        this.$store.dispatch('user/adduser',this.form).then(res=>{
+          this.$message({
+            message: res.errmsg,
+            type: 'success'
+          })
+          this.$router.push({path: '/user/table'})
+        }).catch(err => {
+          console.log(err)
+        })
+      }
     },
     onCancel() {
       this.$message({

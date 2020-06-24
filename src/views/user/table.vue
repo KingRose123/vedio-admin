@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column label="用户类型" width="110" align="center">
         <template slot-scope="scope">
-          {{ +scope.row.code === 9 ? '管理员' : +scope.row.code === 7 ? '教师' : '普通用户' }}
+          {{ +scope.row.type === 9 ? '管理员' : +scope.row.type === 7 ? '教师' : '普通用户' }}
         </template>
       </el-table-column>
       <el-table-column label="最后登录地址" width="180" align="center">
@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="Status" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          <el-tag :type="scope.row.code | statusFilter" @click="handleChange(scope.$index, scope.row)" style="cursor:pointer">{{ +scope.row.code === -1 ? '禁用' : '正常' }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="注册时间" width="200">
@@ -53,7 +53,7 @@
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">禁用</el-button>
+            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,13 +92,14 @@ export default {
       istrue: null,
       totals: null,
       currentPage: 1,
-      PageSize:20,
+      PageSize:20
     }
   },
   created() {
     
-    this.getlist()
-    this.getuserlst()
+    this.getlist().then(() => {
+      this.getuserlst()
+    })
     
   },
   methods: {
@@ -110,8 +111,25 @@ export default {
       this.$router.push({name:'Uadd',query:{uid:row.uid}})
       return false
     },
-    handleDelete() {
+    handleChange(index,row) {
       // 改变用户是否为启用，还是禁用
+      
+      let fdata = {
+        flag: 1,
+        uid: row.uid,
+        code: 0
+      }
+      if(+row.code === -1){
+        fdata.code = 0
+      }
+      else{
+        fdata.code = -1
+      }
+      this.$store.dispatch('user/setgetuserInfo',fdata).then(res => {
+        this.getuserlst()
+      }).catch(err => {
+        console.log(err)
+      })
       return false
     },
     getlist() {
@@ -119,15 +137,19 @@ export default {
         flag: 0
       }
       this.listLoading = true
-      this.$store.dispatch('user/getList',fetdata).then(res =>{
-        this.listLoading = false
-        if(res.errcode === 0){
-          if(this.count > res.data.count)
-            this.count = res.data.count
-          this.totals = res.data.count
-        }
-      }).catch(err => {
-        console.log(err)
+      return new Promise((resolve, reject) => { 
+        this.$store.dispatch('user/getList',fetdata).then(res =>{
+          this.listLoading = false
+          if(res.errcode === 0){
+            if(this.count > res.data.count)
+              this.count = res.data.count
+            this.totals = res.data.count
+          }
+          resolve()
+        }).catch(err => {
+          console.log(err)
+          reject()
+        })
       })
     },
     getuserlst() {
