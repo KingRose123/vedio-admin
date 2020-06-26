@@ -46,7 +46,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="课程简介">
-        <mavon-editor v-model="form.description"/>
+        <mavon-editor v-model="form.description" ref="md" @imgAdd="$imgAdd" @change="change"/>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">{{this.text}}</el-button>
@@ -76,7 +76,8 @@ export default {
       teachers:[],
       count: 0,
       isgai: false,
-      typelists: []
+      typelists: [],
+      changehtml: ''
     }
   },
   mounted() {
@@ -111,6 +112,32 @@ export default {
     })
   },
   methods: {
+    $imgAdd(pos, $file) {
+      var reader = new FileReader();
+        
+      reader.readAsDataURL($file)
+      reader.onload = (event=>{
+        let types = $file.type.split('/')
+
+        let fget = {
+          flag: 1,
+          type: types[1],
+          base64: event.target.result,
+          path: 'image'
+        }
+        this.$store.dispatch('classes/upload',fget).then(res =>{
+          if(res.url){
+            this.$refs.md.$img2Url(pos, res.url);
+          }
+        })
+      })
+    },
+    change(value, render){
+      // render 为 markdown 解析后的结果
+      
+      // console.log(render)
+      this.changehtml = render
+    },
     picupload(file) {
       if(this.checkhege(file.file)){
         var reader = new FileReader();
@@ -137,6 +164,7 @@ export default {
       
       if(this.isgai){
         this.form.flag = 1
+        this.form.description = this.changehtml
         var tijiao = {
           ...this.form
         }

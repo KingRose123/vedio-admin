@@ -58,7 +58,6 @@ export function stypelist(data) {
 
 export function upload(data) {
   const { flag, type, path, base64 } = data
-  console.log(base64)
   return request({
     url: 'admin/upload',
     method: 'post',
