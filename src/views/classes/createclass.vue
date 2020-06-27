@@ -46,7 +46,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="课程简介">
-        <mavon-editor v-model="form.description" ref="md" @imgAdd="$imgAdd" @change="change"/>
+        <el-input v-model="form.description" type="textarea" :rows="2"/>
+      </el-form-item>
+      <el-form-item label="课程描述">
+        <mavon-editor v-model="form.detail" ref="md" @imgAdd="$imgAdd" @change="change"/>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">{{this.text}}</el-button>
@@ -164,7 +167,7 @@ export default {
       
       if(this.isgai){
         this.form.flag = 1
-        this.form.description = this.changehtml
+        this.form.detail = this.changehtml
         var tijiao = {
           ...this.form
         }
